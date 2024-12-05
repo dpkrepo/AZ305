@@ -1,0 +1,95 @@
+Step 1: Design the Architecture
+Define Requirements:
+
+Application components: web front-end, back-end services, and database.
+
+Determine scalability, availability, and security requirements.
+
+Architecture Diagram:
+
+Useing Azure Architecture Center to draw architecture diagram.
+- [picture goes here]
+
+Include Azure App Services, Azure Functions, Azure SQL Database, Virtual Network (VNet), Application Gateway, and Azure Front Door.
+
+Step 2: Set Up the Infrastructure
+Create a Resource Group:
+
+sh
+az group create --name MyResourceGroup --location EastUS
+Set Up Virtual Network:
+
+sh
+az network vnet create --resource-group MyResourceGroup --name MyVnet --address-prefix 10.0.0.0/16 --subnet-name MySubnet --subnet-prefix 10.0.0.0/24
+Create an Application Gateway:
+
+Create a public IP for the gateway.
+
+sh
+az network public-ip create --resource-group MyResourceGroup --name MyAGPublicIPAddress
+Create the Application Gateway.
+
+sh
+az network application-gateway create --resource-group MyResourceGroup --name MyAppGateway --sku Standard_v2 --public-ip-address MyAGPublicIPAddress --vnet-name MyVnet --subnet MySubnet
+Step 3: Deploy Web and Backend Services
+Create an Azure App Service Plan:
+
+sh
+az appservice plan create --name MyAppServicePlan --resource-group MyResourceGroup --sku B1
+Deploy the Web Application:
+
+sh
+az webapp create --resource-group MyResourceGroup --plan MyAppServicePlan --name MyWebApp --runtime "DOTNET|6.0"
+Set Up Azure Functions:
+
+Create a storage account for the functions.
+
+sh
+az storage account create --name mystorageaccount --location eastus --resource-group MyResourceGroup --sku Standard_LRS
+Create the Function App.
+
+sh
+az functionapp create --resource-group MyResourceGroup --consumption-plan-location eastus --runtime dotnet --functions-version 3 --name MyFunctionApp --storage-account mystorageaccount
+Step 4: Configure the Database
+Deploy Azure SQL Database:
+
+sh
+az sql server create --name mydemoserver --resource-group MyResourceGroup --location eastus --admin-user myadmin --admin-password mypassword
+sh
+az sql db create --resource-group MyResourceGroup --server mydemoserver --name mySampleDatabase --service-objective S0
+Set Up Firewall Rules:
+
+sh
+az sql server firewall-rule create --resource-group MyResourceGroup --server mydemoserver --name AllowMyIP --start-ip-address <Your-IP> --end-ip-address <Your-IP>
+Step 5: Implement Security Measures
+Set Up Azure Active Directory:
+
+Integrate Azure AD for authentication and authorization.
+
+Ensure roles and permissions are properly configured.
+
+Configure Azure Key Vault:
+
+Create a Key Vault and store application secrets and certificates.
+
+sh
+az keyvault create --name MyKeyVault --resource-group MyResourceGroup --location eastus
+Step 6: Configure Monitoring and DevOps
+Set Up Azure Monitor and Application Insights:
+
+Enable monitoring for the web app and functions.
+
+Use Application Insights for performance and usage tracking.
+
+Implement CI/CD Pipelines with Azure DevOps:
+
+Set up repositories and pipelines in Azure DevOps.
+
+Automate the deployment process using YAML or classic pipelines.
+
+Step 7: Plan and Implement Disaster Recovery
+Use Azure Site Recovery:
+
+Configure replication and failover settings.
+
+Regularly test failover and failback procedures to ensure preparedness.
